@@ -29,7 +29,7 @@ export default function Services() {
 
     return (
         <section className="services">
-            <Title title="services" />
+            <Title>Services</Title>
             <div className="services-center">
                 {services.map((service, indx) => (
                     <article key={indx} className="service">

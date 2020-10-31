@@ -15,6 +15,7 @@ function ContextProvider({ children }) {
         setRooms(rooms)
         let featuredRooms = rooms.filter(room => room.featured === true)
         setFeaturedRooms(featuredRooms)
+        setLoading(false)
     }, [])
 
     const formatData = (data) => {
@@ -29,8 +30,13 @@ function ContextProvider({ children }) {
         return formatedData
     }
 
+    const getRoom = (slug) => {
+        const room = rooms.find(room => room.slug === slug)
+        return room;
+    }
+
     return (
-        <Context.Provider value="hello">
+        <Context.Provider value={{ featuredRooms, loading, getRoom }}>
             {children}
         </Context.Provider>
     )

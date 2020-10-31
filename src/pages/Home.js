@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import Hero from '../components/Hero'
+import Hero from '../components/Hero/Hero'
 import Banner from '../components/Banner'
 import Services from '../components/Services'
 import { Context } from '../context/index'
