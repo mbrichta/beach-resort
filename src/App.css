@@ -461,7 +461,8 @@ h6 {
 /* end of roomlist */
 /*  rooms fitler*/
 .filter-container {
-  padding: 5rem 0;
+  padding-top: 5rem;
+
 }
 .filter-form {
   width: 60vw;

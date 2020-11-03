@@ -4,20 +4,22 @@ import data from '../data'
 const Context = createContext()
 
 function ContextProvider({ children }) {
-
+    const roomInfo = {
+        type: 'all',
+        capacity: 1,
+        price: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        minSize: 0,
+        maxSize: 0,
+        breakfast: false,
+        pets: false
+    }
     const [rooms, setRooms] = useState([])
     const [sortedRooms, setSortedRooms] = useState([])
     const [featuredRooms, setFeaturedRooms] = useState([])
     const [loading, setLoading] = useState(true)
-    const [type, setType] = useState('all')
-    const [capacity, setCapacity] = useState(1)
-    const [price, setPrice] = useState(0)
-    const [minPrice, setMinPrice] = useState(0)
-    const [maxPrice, setMaxPrice] = useState(0)
-    const [minSize, setMinSize] = useState(0)
-    const [maxSize, setMaxSize] = useState(0)
-    const [breakfast, setBreakfast] = useState(false)
-    const [pets, setPets] = useState(false)
+    const [filterInfo, setFilterInfo] = useState({ ...roomInfo })
 
     useEffect(() => {
         let rooms = formatData(data)
@@ -28,8 +30,11 @@ function ContextProvider({ children }) {
         let maxSize = Math.max(...rooms.map(room => room.size))
         setFeaturedRooms(featuredRooms)
         setLoading(false)
-        setMaxPrice(maxPrice)
-        setMaxSize(maxSize)
+        setFilterInfo(prevInfo => ({
+            ...prevInfo,
+            maxPrice,
+            maxSize
+        }))
 
     }, [])
 
@@ -51,49 +56,21 @@ function ContextProvider({ children }) {
     }
 
     const handleChange = event => {
-        const { name } = event.target
-        const value = event.type === 'checkbox' ? event.target.checked : event.target.value
+        const { name, checked, value, type } = event.target
+        const finalValue = type === 'checkbox' ? checked : value
 
-        switch (name) {
-            case 'type':
-                console.log(value)
-                setType(value)
-                console.log(type)
-                break;
-            case 'capacity':
-                setCapacity(parseInt(value))
-                console.log(parseInt(value))
-                break;
-            case 'price':
-                setPrice(value)
-                break;
-            case 'minPrice':
-                setMinPrice(value)
-                break;
-            case 'maxPrice':
-                setMaxPrice(value)
-                break;
-            case 'minSize':
-                setMinSize(value)
-                break;
-            case 'maxSize':
-                setMaxSize(value)
-                break;
-            case 'breakfast':
-                setBreakfast(value)
-                break;
-            case 'pets':
-                setPets(value)
-                break;
-            default:
-                break;
-        }
+        setFilterInfo(prevInfo => ({
+            ...prevInfo,
+            [name]: finalValue
+        }))
         filterRooms()
     }
 
     const filterRooms = () => {
         let tempRooms = [...rooms]
-        console.log('type is: ' + type)
+        const { type, capacity, price, minSize, maxSize, breakfast, pets } = filterInfo
+
+        console.log('pets' + pets)
         if (type !== 'all') {
             tempRooms = tempRooms.filter(room => room.type === type)
         }
@@ -101,6 +78,19 @@ function ContextProvider({ children }) {
         if (capacity !== 1) {
             tempRooms = tempRooms.filter(room => room.capacity >= capacity)
         }
+
+        tempRooms = tempRooms.filter(room => room.price >= price)
+        tempRooms = tempRooms.filter(room => room.size >= minSize && room.size <= maxSize)
+
+        if (breakfast) {
+            tempRooms = tempRooms.filter(room => room.breakfast === true)
+
+        }
+
+        if (pets) {
+            tempRooms = tempRooms.filter(room => room.pets === true)
+        }
+        console.log(tempRooms)
         setSortedRooms(tempRooms)
     }
 
@@ -113,15 +103,7 @@ function ContextProvider({ children }) {
                 loading,
                 getRoom,
                 handleChange,
-                type,
-                capacity,
-                price,
-                minPrice,
-                maxPrice,
-                minSize,
-                maxSize,
-                breakfast,
-                pets
+                filterInfo,
             }}>
             {children}
         </Context.Provider>

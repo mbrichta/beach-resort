@@ -5,7 +5,7 @@ import RoomCard from './RoomCard'
 
 export default function RoomsList() {
     const { sortedRooms } = useContext(Context)
-    console.log(sortedRooms)
+
     return (
         <>
             {sortedRooms ? (
