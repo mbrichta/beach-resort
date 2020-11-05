@@ -1,41 +1,55 @@
 import React, { createContext, useEffect, useState } from 'react'
 import data from '../data'
+import Client from '../Contentful'
 
 const Context = createContext()
 
 function ContextProvider({ children }) {
-    const roomInfo = {
-        type: 'all',
-        capacity: 1,
-        price: 0,
-        minPrice: 0,
-        maxPrice: 0,
-        minSize: 0,
-        maxSize: 0,
-        breakfast: false,
-        pets: false
-    }
     const [rooms, setRooms] = useState([])
     const [sortedRooms, setSortedRooms] = useState([])
     const [featuredRooms, setFeaturedRooms] = useState([])
     const [loading, setLoading] = useState(true)
-    const [filterInfo, setFilterInfo] = useState({ ...roomInfo })
+    const [filterInfo, setFilterInfo] = useState({})
+
+    const getData = async () => {
+        try {
+
+            let response = await Client.getEntries({
+                content_type: "beachRoomExample"
+            })
+
+            let rooms = formatData(response.items)
+
+            const roomInfo = {
+                type: 'all',
+                capacity: 1,
+                price: 0,
+                minPrice: 0,
+                maxPrice: 0,
+                minSize: 0,
+                maxSize: 0,
+                breakfast: false,
+                pets: false
+            }
+            setRooms(rooms)
+            setSortedRooms(rooms)
+            let featuredRooms = rooms.filter(room => room.featured === true)
+            let maxPrice = Math.max(...rooms.map(room => room.price))
+            let maxSize = Math.max(...rooms.map(room => room.size))
+            setFeaturedRooms(featuredRooms)
+            setLoading(false)
+            setFilterInfo({
+                ...roomInfo,
+                maxPrice,
+                maxSize
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
-        let rooms = formatData(data)
-        setRooms(rooms)
-        setSortedRooms(rooms)
-        let featuredRooms = rooms.filter(room => room.featured === true)
-        let maxPrice = Math.max(...rooms.map(room => room.price))
-        let maxSize = Math.max(...rooms.map(room => room.size))
-        setFeaturedRooms(featuredRooms)
-        setLoading(false)
-        setFilterInfo(prevInfo => ({
-            ...prevInfo,
-            maxPrice,
-            maxSize
-        }))
-
+        getData()
     }, [])
 
     const formatData = (data) => {
@@ -80,6 +94,7 @@ function ContextProvider({ children }) {
         }
 
         tempRooms = tempRooms.filter(room => room.price >= price)
+
         tempRooms = tempRooms.filter(room => room.size >= minSize && room.size <= maxSize)
 
         if (breakfast) {
@@ -90,7 +105,7 @@ function ContextProvider({ children }) {
         if (pets) {
             tempRooms = tempRooms.filter(room => room.pets === true)
         }
-        console.log(tempRooms)
+
         setSortedRooms(tempRooms)
     }
 

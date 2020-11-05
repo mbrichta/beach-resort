@@ -1,9 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero/Hero'
 import Banner from '../components/Banner'
 import Services from '../components/Services'
-import { Context } from '../context/index'
 import FeaturedRooms from '../components/FeaturedRooms'
 
 export default function Home() {

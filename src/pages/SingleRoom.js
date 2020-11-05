@@ -1,7 +1,5 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import defaultBckg from '../images/room-1.jpeg'
-import Hero from '../components/Hero/Hero'
 import Banner from '../components/Banner'
 import { Context } from '../context'
 import { StyledHero } from '../components/Hero/styles/StyledHero'

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Context } from '../context'
 import Title from './Title'
 
@@ -19,6 +19,7 @@ export default function RoomsFilter({ rooms }) {
         maxSize,
         breakfast,
         pets } = filterInfo
+    console.log(filterInfo)
 
     let types = getUniqueValues(rooms, 'type')
     types = ['all', ...types]
@@ -30,6 +31,7 @@ export default function RoomsFilter({ rooms }) {
     people = people.map((item, indx) => (
         <option key={indx} value={item}>{item}</option>
     ))
+
     return (
         <section className="filter-container">
             <Title>Search Rooms</Title>

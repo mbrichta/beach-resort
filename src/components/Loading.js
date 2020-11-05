@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import spinnerGif from '../images/gif/loading-arrow.gif'
 
 export default function Loading() {
